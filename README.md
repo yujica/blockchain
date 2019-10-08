@@ -1,7 +1,5 @@
 
-# Blockchain Development 
-
-## Status: Pre-Alpha.
+# Blockchain Development Study
 
 ## Java version: 1.8.0_222
 
@@ -16,8 +14,8 @@ I have done creating nonce:
 
 However, there are many things to do untill completing this project:
 
-- Creating Wallet
-  - [ ] Create wallet
+- Create Wallet
+  - [ ] Develop wallet
   - [ ] Create blockchain addresses
   - [ ] Transaction signature
   - [ ] Transaction verify
