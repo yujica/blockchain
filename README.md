@@ -10,7 +10,8 @@ I have done creating nonce:
   - [x] Get hash of each block
   - [x] Add transaction
   - [x] Culculate nonce
-  - [ ] Mining
+  - [x] Mining
+  - [x] Culculate the total Amount
 
 However, there are many things to do untill completing this project:
 
