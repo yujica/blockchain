@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.security.MessageDigest;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,9 +13,6 @@ import java.util.Map.Entry;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 import java.util.stream.Collectors;
-import java.math.BigInteger;
-import java.security.MessageDigest;
-
 
 class BlockChain{
     List<String> transaction_pool;
@@ -42,7 +40,7 @@ class BlockChain{
     }
 
     public String hash(Map<String, Object> unsorted_block){
-        String sha256 = "";
+        StringBuilder sha256 = new StringBuilder();
         String sorted_block_str;
         StringJoiner sj = new StringJoiner("");
         unsorted_block.entrySet().stream()
@@ -53,11 +51,13 @@ class BlockChain{
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] result = digest.digest(sorted_block_str.getBytes());
-            sha256 = String.format("%040x", new BigInteger(1, result));
+            for (byte b : result) {
+                sha256.append(String.format("%02x", b));
+            }
         } catch (Exception e){
             e.printStackTrace();
         }
-        return sha256;
+        return sha256.toString();
     }
 
     public void pprint(List<Map<String, Object>> blocklist){
