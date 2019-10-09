@@ -21,7 +21,7 @@ class BlockChain{
         create_block(0, "init hash");
     }
 
-    public Map<String, Object> create_block(int nonce, String previous_hash){
+    public void create_block(int nonce, String previous_hash){
         this.block = new HashMap<String, Object>();
         long currentTimestamp = System.currentTimeMillis();
         block.put("timestamp", currentTimestamp);
@@ -31,8 +31,6 @@ class BlockChain{
 
         this.chain.add(block);
         this.transaction_pool = new ArrayList<>();
-
-        return block;
     }
     
     public void pprint(List<Map<String, Object>> blocklist){
