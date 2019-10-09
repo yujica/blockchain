@@ -6,12 +6,12 @@
 I have done creating nonce:
 
 - Creating Blockchain
-  - [x] Create a blockchain class
-  - [x] Get hash of each block
-  - [x] Add transaction
-  - [x] Culculate nonce
-  - [x] Mining
-  - [x] Culculate the total Amount
+  - [x] Create a blockchain class (Block.java)
+  - [x] Get hash of each block (Hash.java)
+  - [x] Add transaction (Transaction.java)
+  - [x] Culculate nonce (Nonce.java)
+  - [x] Mining (Mining.java)
+  - [x] Culculate the total Amount (TotalAmount.java)
 
 However, there are many things to do untill completing this project:
 
