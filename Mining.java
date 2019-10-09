@@ -1,28 +1,28 @@
 import java.io.IOException;
-import java.util.logging.FileHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
+import java.security.MessageDigest;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
-import java.util.stream.Collectors;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringJoiner;
-import java.math.BigInteger;
-import java.security.MessageDigest;
+import java.util.stream.Stream;
+import java.util.stream.Collectors;
+
 
 class BlockChain{
-    List<Map<String, Object>> transaction_pool;
     List<Map<String, Object>> chain;
+    List<Map<String, Object>> transaction_pool;
     Map<String, Object> block;
-    String hash;
     Map<String, Object> transaction;
     String blockchain_address;
+    String hash;
 
     int MINING_DIFFICULTY = 3;
     String MINING_SENDER = "THE BLOCKCHAIN";
@@ -30,14 +30,13 @@ class BlockChain{
 
 
     public BlockChain(String blockchain_address){
+    	this.chain = new ArrayList<Map<String, Object>>();
         this.transaction_pool = new ArrayList<>();
-        this.chain = new ArrayList<Map<String, Object>>();
         create_block(0, "init hash");
         this.blockchain_address = blockchain_address;
     }
     
-    public Map<String, Object> create_block(int nonce, String previous_hash){
-
+    public void create_block(int nonce, String previous_hash){
         this.block = new HashMap<String, Object>();
         long currentTimestamp = System.currentTimeMillis();
         block.put("timestamp", currentTimestamp);
@@ -47,8 +46,6 @@ class BlockChain{
         
         this.chain.add(block);
         this.transaction_pool = new ArrayList<>();
-
-        return block;
     }
 
     public String hash(Map<String, Object> unsorted_block){
@@ -73,15 +70,13 @@ class BlockChain{
         return sha256.toString();
     }
 
-    public boolean add_transaction(String sender_blockchain_address, String recipient_blockchain_address, double value){
+    public void add_transaction(String sender_blockchain_address, String recipient_blockchain_address, double value){
         this.transaction = new HashMap<String, Object>();
         transaction.put("sender_blockchain_address", sender_blockchain_address);
         transaction.put("recipient_blockchain_address", recipient_blockchain_address);
         transaction.put("value", value);
         this.transaction_pool.add(transaction);
-        return true;
     }
-    
     
     public int proof_of_work(){
         int nonce = 0;
@@ -89,8 +84,7 @@ class BlockChain{
         while (valid_proof(this.transaction_pool, previous_hash, nonce) == false) {
             nonce += 1;
         }
-        return nonce;
-        
+        return nonce;  
     }
     
     public boolean valid_proof(List<Map<String, Object>> transactions, String previous_hash, int nonce){
@@ -108,11 +102,7 @@ class BlockChain{
         }
     }
 
-    public String repeat(String str, int n) {
-      return String.join("", Collections.nCopies(n, str));
-    }
-
-    public boolean mining(){
+    public void mining(){
         String sender_blockchain_address = MINING_SENDER;
         String recipient_blockchain_address = this.blockchain_address;
         double value=MINING_REWARD;
@@ -120,19 +110,36 @@ class BlockChain{
         int nonce = proof_of_work();
         String previous_hash = hash((chain.size()>0) ? chain.get(chain.size()-1) : null);
         create_block(nonce, previous_hash);
-        return true;
     }
 
+
+    public String repeat(String str, int n) {
+      return String.join("", Collections.nCopies(n, str));
+    }
+    
+    @SuppressWarnings("unchecked")
+    public static <T> T autoCast(Object obj) {
+        T castObj = (T) obj;
+        return castObj;
+    }
 
     public void pprint(List<Map<String, Object>> blocklist){
         int index = 0;
         for (Map<String, Object> blockmap : blocklist)
         {
             System.out.println("==================== Chain " + index + " ====================");
-            System.out.println(" nonce               => " + blockmap.get("nonce"));
-            System.out.println(" previous_hash => " + blockmap.get("previous_hash"));
+            System.out.println(" nonce            => " + blockmap.get("nonce"));
+            System.out.println(" previous_hash    => " + blockmap.get("previous_hash"));
             System.out.println(" timestamp        => " + blockmap.get("timestamp"));
-            System.out.println(" transactions     => " + blockmap.get("transactions"));
+            int index_trans = 0;
+            List<Map<String, Object>> transactions_list = autoCast(blockmap.get("transactions"));
+            for (Map<String, Object> transactions_map : transactions_list) {
+            	    System.out.println("   ##### transactions " + index_trans + " #####");
+                	System.out.println("   sender_blockchain_address    => " + transactions_map.get("sender_blockchain_address"));
+                	System.out.println("   recipient_blockchain_address => " + transactions_map.get("recipient_blockchain_address"));
+                	System.out.println("   value  => " + transactions_map.get("value"));
+                	index_trans++;
+            }
             index++;
         }
         System.out.println("");
@@ -148,8 +155,6 @@ public class Mining {
         Logger logger = Logger.getLogger(Mining.class.getName());
         logger.setLevel(Level.INFO);
         
-        Map<String, Object> block_map = new HashMap<String, Object>();
-        List<Map<String, Object>> chain_list = new ArrayList<Map<String, Object>>();
         String previous_hash = "";
         int nonce;
         
